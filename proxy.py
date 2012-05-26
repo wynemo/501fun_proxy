@@ -87,7 +87,7 @@ class proxy:
                 raise web.notfound()
         try:
             if url is None:
-                url = i.url
+                url = i.url.strip()
         except:pass
 
         agent = web.ctx.env.get('HTTP_USER_AGENT', '').lower()
