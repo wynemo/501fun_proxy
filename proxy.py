@@ -6,7 +6,7 @@ from config import settings
 import convert_link
 import deny
 import util
-from tco import handle_damn_tco
+import tco
 import urllib2
 
 render = settings.render
@@ -42,16 +42,14 @@ class proxy:
                 return -1 != type1.lower().find('text/html')
             return False
             
-        def redirect_tco(url):
-            if url.lower().startswith('http://t.co') or\
-                url.lower().startswith('https://t.co'):#god damned t.co
-                new_url = handle_damn_tco(s2)
-                if(new_url and len(new_url)):
-                    url1 = '/proxy?url=' + util.my_quote_plus(new_url)
-                    if nojs is not None:
-                        url1 += '&nojs=1'
-                    set_len_header()
-                    my_direct(url1)#303
+        def redirect_refresh(url):
+            new_url = tco.find_meta_refresh_url(s2)
+            if(new_url and len(new_url)):
+                url1 = '/proxy?url=' + util.my_quote_plus(new_url)
+                if nojs is not None:
+                    url1 += '&nojs=1'
+                set_len_header()
+                my_direct(url1)#303
 
         def r1(p1,str1):
             o1 = re.search(p1,str1)
@@ -173,8 +171,8 @@ class proxy:
             return s2
 
         
-        #twitter t.co
-        redirect_tco(url)   
+        #if has meta refresh pattern,303
+        redirect_refresh(url)
             
         if is_html(content_type) or\
             re.search(r'<\s*html',s2,re.S|re.I):#should be html
