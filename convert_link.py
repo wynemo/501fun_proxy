@@ -37,6 +37,7 @@ def convert_html_tag_url(s1,refer_url,nojs=None):
             else:
                 url = get_current(refer_url) + '/' + url
         f = lambda x:(x is None) and '' or '&nojs=1'
+        url = util.get_chs_lnk(url)
         return ''.join([pre1,util.my_quote_plus(url),f(nojs)])
     #p1 = r'''(?:<\s*\w+\s+[^>]*?(?:\shref|\ssrc)\s*=\s*["']?\s*([^>'"\s]+)(?=\s*["']?[^>]*?>))'''
     p1 = r'''(?:(?:\Whref|\Wsrc)\s*=\s*["']?\s*([^>'"\s]+)(?=\s*["']?[^>]*?>))'''
