@@ -57,6 +57,14 @@ class proxy:
                 return o1.group(1)
             return None
 
+        def get_character_set(s1):
+            def_pattern = 'utf-8'
+            p_str = r'<\s*meta[^<>]+?charset\s*=\s*(\S+?)[^<>]*?>'
+            p1 = re.compile(p_str,re.I|re.S)
+            char_set = r1(p1,s1)
+            f = lambda x : x .replace('"','').replace("'",'').strip()
+            return None if char_set is None else f(char_set)
+
         def redirect_sharp(url):
             url_part_o = re.search(r'(.+)(#.*)',url)
             if url_part_o is not None:
