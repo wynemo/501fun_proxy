@@ -22,7 +22,6 @@ class proxy:
         import zlib
 
         def my_direct(url):
-            #print 'host is ',web.ctx.host
             server_port = web.ctx.env.get('SERVER_PORT',80)
             x_server_port = web.ctx.env.get('HTTP_X_FORWARDED_PROTO','http')
             if('443' == server_port or 'https' == x_server_port):
@@ -35,10 +34,11 @@ class proxy:
                 if len1:
                     web.header('Content-Length',len1,unique=True)
                 else:
-                    web.header('Content-Length',i1.headers['Content-Length'],unique=True)
+                    web.header('Content-Length',i1.headers['Content-Length'],
+                        unique=True)
                     
         def is_html(type1):
-            if type1 and len(type1):
+            if type1 is not None and len(type1):
                 return -1 != type1.lower().find('text/html')
             return False
             
@@ -58,12 +58,12 @@ class proxy:
             return None
 
         def get_character_set(s1):
-            def_pattern = 'utf-8'
+            def_char = 'utf-8'
             p_str = r'<\s*meta[^<>]+?charset\s*=\s*(\S+?)[^<>]*?>'
             p1 = re.compile(p_str,re.I|re.S)
             char_set = r1(p1,s1)
-            f = lambda x : x .replace('"','').replace("'",'').strip()
-            return None if char_set is None else f(char_set)
+            f = lambda x : x.replace('"','').replace("'",'').strip()
+            return def_char if char_set is None else f(char_set)
 
         def redirect_sharp(url):
             url_part_o = re.search(r'(.+)(#.*)',url)
@@ -122,25 +122,19 @@ class proxy:
 
         if b64 == '1':
             url = urllib.unquote_plus(base64.b64decode(url))
-        #url = re.sub(r'#.*','',url)
         redirect_sharp(url) 
 
         
         header1 = std_headers.copy()
         header1['User-Agent'] = web.ctx.env.get('HTTP_USER_AGENT', header1['User-Agent'])
-        #if web.ctx.env.has_key('HTTP_ACCEPT'):
-        #    print web.ctx.env['HTTP_ACCEPT']
         request = urllib2.Request(url.encode('utf-8'), None, header1)
         if rf:
             request.add_header('Referer',rf)
         try:
             i1 = urllib2.urlopen(request,timeout = 3)
             redirect_sharp(i1.url) 
-            #print 'i1.url',i1.url
         except Exception,e:
             return str(e)
-
-        #print 'url is ',i1.url
                 
         s2 = i1.read()
         if i1.info().get('Content-Encoding') == 'gzip':
@@ -156,13 +150,8 @@ class proxy:
         content_type = None
         if i1.headers.has_key('Content-Type'):
             content_type = i1.headers['Content-Type']
-            #content_type = i1.headers.getheader('Content-Type')
             if content_type and len(content_type):
-                #print 'content_type is ',content_type
                 web.header('Content-Type',content_type, unique=True)
-        #else:
-        #    print 'no content type'
-        #    pass
                
         #image     
         type1 = i1.headers.type
@@ -170,22 +159,22 @@ class proxy:
         if pt1:
             set_len_header()
             return s2
+
+        char_set = get_character_set(s2)#get character set,default utf-8
         
         #css
         if type1.lower().endswith('css'):
-            #s2 = convert_link.conver_url_in_css(s2)
-            s2 = convert_link.convert_html_tag_url(s2,i1.url,nojs)
+            s2 = convert_link.convert_html_tag_url(s2,i1.url,nojs,char_set)
             set_len_header(str(len(s2)))
             return s2
-
         
         #if has meta refresh pattern,303
         redirect_refresh(url)
             
         if is_html(content_type) or\
             re.search(r'<\s*html',s2,re.S|re.I):#should be html
-            #convert
-            s2 = convert_link.convert_html_tag_url(s2,i1.url)#conver href,src in tag
+            #conver href,src in tag
+            s2 = convert_link.convert_html_tag_url(s2,i1.url,nojs,char_set)
             #deny
             s2 = deny.replace_all_plus(s2,nojs)
             
@@ -195,4 +184,3 @@ class proxy:
             #other type
             set_len_header()
             return s2
-

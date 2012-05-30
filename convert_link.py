@@ -6,7 +6,7 @@ flag1 = re.I|re.S
 pre1 = '/proxy?url='
 
 
-def convert_html_tag_url(s1,refer_url,nojs=None):
+def convert_html_tag_url(s1,refer_url,nojs=None,charset='utf-8'):
     def get_current(url):
         pos = url.rfind('/')
         if pos != -1:
@@ -36,8 +36,8 @@ def convert_html_tag_url(s1,refer_url,nojs=None):
                 url = convert_rel_url(url,refer_url)
             else:
                 url = get_current(refer_url) + '/' + url
-        f = lambda x:(x is None) and '' or '&nojs=1'
-        url = util.get_chs_lnk(url)
+        f = lambda x: '' if x is None else '&nojs=1'
+        url = util.get_chs_lnk(url,charset)
         return ''.join([pre1,util.my_quote_plus(url),f(nojs)])
     #p1 = r'''(?:<\s*\w+\s+[^>]*?(?:\shref|\ssrc)\s*=\s*["']?\s*([^>'"\s]+)(?=\s*["']?[^>]*?>))'''
     p1 = r'''(?:(?:\Whref|\Wsrc)\s*=\s*["']?\s*([^>'"\s]+)(?=\s*["']?[^>]*?>))'''
