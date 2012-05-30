@@ -59,7 +59,7 @@ class proxy:
 
         def get_character_set(s1):
             def_char = 'utf-8'
-            p_str = r'<\s*meta[^<>]+?charset\s*=\s*(\S+?)[^<>]*?>'
+            p_str = r'<\s*meta[^<>]+?charset\s*=\s*(\S+)[^<>]*?>'
             p1 = re.compile(p_str,re.I|re.S)
             char_set = r1(p1,s1)
             f = lambda x : x.replace('"','').replace("'",'').strip()
