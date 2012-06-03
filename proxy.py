@@ -87,7 +87,6 @@ class proxy:
             proxy_url_o = re.match(proxy_refer_pattern,rf)
             if proxy_url_o is not None:
                 un_url = urllib.unquote(proxy_url_o.group(1))
-                print 'un_url',un_url
                 url = r1(r'(\w+://(?:[^/]+\.)+[^/]+)',un_url)
                 rf = url
                 url = url + para
