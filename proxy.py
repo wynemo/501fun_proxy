@@ -126,11 +126,15 @@ class proxy:
         
         header1 = std_headers.copy()
         header1['User-Agent'] = web.ctx.env.get('HTTP_USER_AGENT', header1['User-Agent'])
-        request = urllib2.Request(url.encode('utf-8'), None, header1)
+        #request = urllib2.Request(url.encode('utf-8'), None, header1)
+        opener = urllib2.build_opener(urllib2.HTTPCookieProcessor())
+        opener.addheaders = [('User-agent', header1['User-Agent'])] #todo
         if rf:
-            request.add_header('Referer',rf)
+            #request.add_header('Referer',rf)
+            opener.addheaders.append(('Referer',rf))
         try:
-            i1 = urllib2.urlopen(request,timeout = 3)
+            #i1 = urllib2.urlopen(request,timeout = 3)
+            i1 = opener.open(request,timeout = 3)
             redirect_sharp(i1.url) 
         except Exception,e:
             return str(e)
