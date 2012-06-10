@@ -48,10 +48,10 @@ def replace_on_load(s1):
     return new_str
 
 def replace_all_plus(s1,nojs = None):#todo,make pattern match once
-    s1 = replace_base_tag(s1)
+    s1,base_url = replace_base_tag(s1)
     s1 = replace_iframe(s1)
     if nojs is not None:
-        s1,base_url = replace_js_plus(s1)
+        s1 = replace_js_plus(s1)
     s1 = replace_on_load(s1)
     s1 = replace_googleplus_hide(s1)
     return s1,base_url
