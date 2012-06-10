@@ -12,8 +12,9 @@ def replace_pattern(pattern1,s1,count1 = None):
         return re.sub(re_cpl,'',s1,count1)
 
 def replace_base_tag(s1,count1 = 1):
-    pattern1 = r'<\s*base\W.+?>'
-    return replace_pattern(pattern1,s1,count1)
+    pattern1 = r'''<\s*base\shref\s*=\s*["'](.+?)["']\s*>'''
+    o1 = re.search(pattern1,s1,flag1)
+    return (s1,None) if o1 is None else (s1.replace(o1.group(),'',1),o1.group(1).strip())
     
 def replace_iframe(s1):
     pattern1 = r'<\s*iframe.*?\Wiframe\s*>'
@@ -23,6 +24,7 @@ def replace_js_plus(s1):
     pattern1 = r'''<\s*script.*?<\s*/\s*script\s*>'''
     return replace_pattern(pattern1,s1)
 
+# https://plus.google.com
 def replace_googleplus_hide(s1):
     pattern1 = '''<style>\s*body\s*{[^{}]*?visibility\s*:\s*hidden\s*;\s*}\s*</style>'''
     return replace_pattern(pattern1,s1)
@@ -49,8 +51,8 @@ def replace_all_plus(s1,nojs = None):#todo,make pattern match once
     s1 = replace_base_tag(s1)
     s1 = replace_iframe(s1)
     if nojs is not None:
-        s1 = replace_js_plus(s1)
+        s1,base_url = replace_js_plus(s1)
     s1 = replace_on_load(s1)
     s1 = replace_googleplus_hide(s1)
-    return s1
+    return s1,base_url
 

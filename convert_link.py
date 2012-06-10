@@ -9,9 +9,7 @@ pre1 = '/proxy?url='
 def convert_html_tag_url(s1,refer_url,nojs=None,charset='utf-8'):
     def get_current(url):
         pos = url.rfind('/')
-        if pos != -1:
-            return url[:pos]
-        return url
+        return url if -1 == pos else url[:pos]
     def convert_rel_url(path1,ref_url):
         rv = ref_url
         pos = rv.rfind('/')
