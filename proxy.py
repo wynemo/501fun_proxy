@@ -134,7 +134,7 @@ class proxy:
             opener.addheaders.append(('Referer',rf))
         try:
             #i1 = urllib2.urlopen(request,timeout = 3)
-            i1 = opener.open(request,timeout = 3)
+            i1 = opener.open(url.encode('utf-8'),timeout = 3)
             redirect_sharp(i1.url) 
         except Exception,e:
             return str(e)
