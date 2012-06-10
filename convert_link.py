@@ -6,7 +6,7 @@ flag1 = re.I|re.S
 pre1 = '/proxy?url='
 
 
-def convert_html_tag_url(s1,refer_url,nojs=None,charset='utf-8'):
+def convert_html_tag_url(s1,refer_url,base_url=None,nojs=None,charset='utf-8'):
     def get_current(url):
         pos = url.rfind('/')
         return url if -1 == pos else url[:pos]
@@ -28,12 +28,18 @@ def convert_html_tag_url(s1,refer_url,nojs=None,charset='utf-8'):
         elif url.startswith('//'):#for links starts with '//',this link is same with the page's crx protocol
             url = 'http:' + url
         elif not url.startswith('http'):
+            tmp_url = refer_url if base_url is None else base_url
             if url.startswith('/'):
-                url = util.get_base_url(refer_url) + url
+                url = util.get_base_url(tmp_url) + url
             elif url.startswith('..'):
-                url = convert_rel_url(url,refer_url)
+                url = convert_rel_url(url,tmp_url)
+            elif url.startswith('./'):
+                url1 = get_current(tmp_url)
+                url2 = url.replace('.','',1)
+                url = url1 + '/' + url2
             else:
-                url = get_current(refer_url) + '/' + url
+                url1 = get_current(tmp_url)
+                url = url1 + '/' + url
         f = lambda x: '' if x is None else '&nojs=1'
         url = util.get_chs_lnk(url,charset)
         return ''.join([pre1,util.my_quote_plus(url),f(nojs)])

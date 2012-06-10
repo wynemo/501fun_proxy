@@ -167,7 +167,7 @@ class proxy:
         
         #css
         if type1.lower().endswith('css'):
-            s2 = convert_link.convert_html_tag_url(s2,i1.url,nojs,char_set)
+            s2 = convert_link.convert_html_tag_url(s2,i1.url,None,nojs,char_set)
             set_len_header(str(len(s2)))
             return s2
         
@@ -176,10 +176,10 @@ class proxy:
             
         if is_html(content_type) or\
             re.search(r'<\s*html',s2,re.S|re.I):#should be html
-            #conver href,src in tag
-            s2 = convert_link.convert_html_tag_url(s2,i1.url,nojs,char_set)
             #deny
-            s2 = deny.replace_all_plus(s2,nojs)
+            s2,base_url = deny.replace_all_plus(s2,nojs)
+            #conver href,src in tag
+            s2 = convert_link.convert_html_tag_url(s2,i1.url,base_url,nojs,char_set)
             
             set_len_header(str(len(s2)))
             return s2
