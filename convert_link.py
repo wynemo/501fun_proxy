@@ -51,7 +51,8 @@ def convert_html_tag_url(s1,refer_url,base_url=None,nojs=None,charset='utf-8'):
     p4 = r'''(?:<\s*(?:object|param)\s+[^>]*?(?:data|value)\s*=\s*["']?\s*([^>'"\s]+)(?=\s*["']?[^>]*?>))'''
     #example:@import '1510_layout.css'; from http://my1510.cn/templates/skin3/css/1510.css
     p5 = r'''(?:@import\s+["']([^"']+?)["']\s*;)'''
-    pt = p1 + '|' +p2 + '|' + p3 + '|' + p4 + '|' + p5
+    p6 = r'''(?:<\s*td\s[^>]*background\s*=\s*["']([^>]+)["'])'''
+    pt = p1 + '|' +p2 + '|' + p3 + '|' + p4 + '|' + p5 + '|' + p6
     iter1 = re.finditer(pt,s1,flag1)
     new_str = ''
     pos = 0
@@ -65,8 +66,10 @@ def convert_html_tag_url(s1,refer_url,base_url=None,nojs=None,charset='utf-8'):
                 url_index = 3
             elif each.group(4):
                 url_index = 4
-            else:
+            elif each.group(5):
                 url_index = 5
+            else:
+                url_index = 6 
             before_pos = each.start(url_index)
             after_pos = each.end(url_index)
             new_url = each.group(url_index)
