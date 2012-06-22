@@ -12,7 +12,7 @@ def replace_pattern(pattern1,s1,count1 = None):
         return re.sub(re_cpl,'',s1,count1)
 
 def replace_base_tag(s1,count1 = 1):
-    pattern1 = r'''<\s*base\shref\s*=\s*["'](.+?)["']\s*>'''
+    pattern1 = r'''<\s*base\shref\s*=\s*["']([^<>]+?)["'].*>'''
     o1 = re.search(pattern1,s1,flag1)
     return (s1,None) if o1 is None else (s1.replace(o1.group(),'',1),o1.group(1).strip())
     
