@@ -149,10 +149,10 @@ class proxy:
                 s2 = zlib.decompress(s2)
             except:
                 s2 = zlib.decompressobj(-zlib.MAX_WBITS).decompress(s2)
-        # #get content type
-        # content_type = None
-        # if i1.headers.has_key('Content-Type'):
-        #     content_type = i1.headers['Content-Type']
+        #get content type
+        content_type = None
+        if i1.headers.has_key('Content-Type'):
+             content_type = i1.headers['Content-Type']
         #     if content_type and len(content_type):
         #         web.header('Content-Type',content_type, unique=True)
         for each in i1.headers:
